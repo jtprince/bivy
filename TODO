@@ -1,0 +1,12 @@
+
+
+high-priority:
+redo citation to reference (in lib and docs)
+need even better system for missing journals
+more complete tests, convert to rspec
+add some major styles
+add 'book'
+document 'author' and how it operates
+
+low-priority:
+citations in different formats than just numbering

@@ -1,0 +1,83 @@
+---
+inMenu: true
+directoryName: Tutorial
+---
+New Formats and Media
+=====================
+
+bivy has been designed modularly so that new formats (e.g., from different journals) and new media (rtf, openoffice, etc.) can be added.
+
+Current bibliography media: *html*
+
+Current formats: *jtp*, *acs*(in progress)
+
+## 1. Creating a new media file
+
+A new media object is created like this:
+
+    Media.new(:html)
+
+A new type of media should be defined in the `media` directory.  The class
+name should be capitalized and all lowercase, or else you need to add a key to
+the hash `Symbol_to_class_string` in the `Media` module to convert a lowercase
+symbol (which is also the filename to require) into the properly capitalized
+class name.  For example:
+
+    # the media file is 'media/html'
+    class Media::HTML
+    include Media
+    Media::Symbol_to_class_string[:html] = 'HTML'
+    ... 
+    end
+
+Each media class should define seven methods: header, footer, italics, bold,
+underline, list, periodize.  See the media/html file for examples.
+
+## 2. Create a new format file
+
+Create new format files in the `format` directory.  Again, if the class is not first letter capitalized and all lowercase, you need to set a hash key inside your class:
+
+    class Format::MyCrazyFormat
+    include Format
+    Format::Symbol_to_class_string[:my_crazy_format] = 'MyCrazyFormat'
+    ...
+    end
+
+Citations are formatted by calling the method `format` on citations by the format object:
+
+    format_obj = Format.new(Media.new(:html), :my_crazy_format)
+    format_obj.format(citations)
+
+Format objects should define a method for each type of citation.  Current citations are: article, article_to_be_submitted, and webpage.
+
+    def article_to_be_submitted
+      [author_list('.'), b(journal_iso), i('Article to be submitted')]
+    end
+    # 'finish' method will compact, periodize, and join the array with spaces
+
+If an array is returned, the format method will call `finish` on the array,
+which will compact the array and periodize each argument (ensure 1 and only 1
+period at the end) and join the pieces with a space.  If a string is returned
+by the method, it will remain as is.  So, for special cases, you can periodize individual elements and return a string in precisely the format you desire:
+
+    def webpage
+      ar = [periodize(b(title)), u(url), periodize("#{b(year)}, #{month} #{day}")]
+      ar.compact.join(' ')
+    end
+    # will print the citation as is
+
+### Format's smart method access
+
+A format object will access the particular method it needs from itself, the
+defined set of media methods in `Format::MediaForwarding`, and any methods
+that the current citation can respond to (in that order).  Here is an example
+to demonstrate the long way and the short way:
+
+    @media_obj.b(@cit.title)  # long way
+    b(title)                  # short way (does the long way behind the scenes)
+
+The `b`, `u`, and `i` methods are best way to call bold, underline, and
+italics on the media object.  These methods will return `nil` if the object is
+missing that property or convert the input into a string and call the media
+object's method (e.g. `bold`).
+

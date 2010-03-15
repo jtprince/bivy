@@ -1,0 +1,37 @@
+= bivy
+
+bivy - (*b*ibliography *i*n *v*im and *y*aml) is a lightweight alternative to
+bibliographic management systems.  bivy aims to provides simple tools to
+create a bibliography in whatever format you need, all from bibliographies
+stored in a yaml file (the bivy file).
+
+== History
+
+I wanted a simple bibliography generator for use on any platform that worked
+well with OpenOffice.  Having tried my hand a few times at it, I think I
+finally have a light footprint system that is easy to setup and gets the job
+done.  
+
+Bivy sacks are a lightweight alternative to a tent.  (I'm sure you see the
+parallel)  Also, you don't really *have to* use vim, it just worked for the
+acronymn and it *is* really handy for editing your yaml file.
+
+== Features
+
+* yaml based bibliography files
+* lookup of bibliographic information from a pubmed ID
+* formatting of citations in a document based on identifiers
+* modular creation of bibliographies in any format or output
+* easy addition of new formats or outputs
+* simple modification of OpenOffice documents
+
+== Current Focus
+
+* Simple OpenOffice support: 1) replaces citations with correct citation
+number 2) outputs bibliography in html that can be directly imported into
+document.  
+* PubMed support (downloads xml from web and adds to bivy file)
+
+== Copyright
+
+See LICENSE for details. (MIT-ish license)

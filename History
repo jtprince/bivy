@@ -1,0 +1,11 @@
+== 0.0.4 / 2010-03-15
+
+* switched repo to jeweler
+
+== 0.0.3
+
+* basic functionality in place (wrote 122 reference/132 citation document with article, article_to_be_submitted, and webpage using it)
+* easier introduction of new formats
+* deal with missing journals in a better manner
+
+

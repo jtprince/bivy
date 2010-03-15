@@ -1,0 +1,71 @@
+---
+inMenu: true
+directoryName: Tutorial
+---
+Step-by-Step
+============
+
+## 1. Create a Bibliographic Entry
+
+Create an entry in your bibliography file (here called 'bib.yaml').  This can be done by hand or using pubmed_to_yaml.  If the pubmed ID is 17322870:
+
+    pubmed_to_bivy.rb bib.yaml 17322870
+
+**NOTE** If the full journal names are missing it may fail.  If so, just add
+entries to the `medline_to_iso.yaml` and `medline_to_full.yaml` files.  On my
+system these would be in
+`/usr/lib/ruby/gems/1.8/gems/bib_writer-0.0.2/lib/journal/`
+
+This will print the uniq ID to the screen (in this case, `Rinner2007`).  In any case, the uniq id is simply the hash key storing the entry in your yaml file. 
+
+## 2. Use the unique identifier in your OpenOffice document
+
+By default, citations are entered in your document like this:
+
+    This is my text and following the citation. #[Rinner2007]
+
+If I have two or more, I list with commas and no spaces:
+
+    A multiple citation. #[Rinner2007,Jones2003,Panda2001]
+
+## 3. Format the citations
+
+In open office, we can use regular expressions to format all of our citations at once when we are ready for print quality:
+
+    Edit -> Find and Replace
+
+    -------------
+    Search for:
+    #\\[[^ ]*\\]
+    Replace with:
+    &
+    -------------
+
+    Click 'More Options' and check 'Regular expressions'
+    Click on the 'Replace with' box and then the 'Format' box
+    and add whatever formatting you desire.
+    Then click 'Replace All'
+
+(if you are reading the text source version of this page, you should replace
+the two backslashes with one)
+
+## 4. Substitute citations and build bibliography:
+
+We read the citations, reformat them, and create a bibliography:
+
+    bivy.rb bib.yaml MyDoc.odt
+
+This will output two files: `MyDoc.bib.html` and `MyDoc.cit.odt`.  The
+`.cit.odt` file is our reformatted citations.  We open it in OpenOffice,
+scroll down to wherever we want our bibliography and insert the html document:
+
+    Insert -> File : 'MyDoc.bib.html'
+
+It is often helpful to adjust the spacing of the list.  Do this by
+highlighting the bibliography, then:
+
+    Format -> Bullets and Numbering
+    Then adjust 'Minimum space number <-> text'
+
+Wallah!  A beautifully formatted bibliography!
+
