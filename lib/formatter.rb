@@ -105,9 +105,9 @@ class Formatter
         else # assuming array
           aa = citation.authors
           case aa.size
-          when 1: 
+          when 1 
             aa[0].last
-          when 2: 
+          when 2 
             aa[0].last + ' and ' + aa[1].last
             #aa[0].last + ' &amp; ' + aa[1].last   ## using an ampersand
           else
@@ -209,7 +209,9 @@ class Formatter
   # the citation number
   # (see tests for examples) 
   def replace_citations_numerically(string, find_start_citation=FindStartCitation, find_end_citation=FindEndCitation, split_citations=SplitCitations, start_numbering=StartNumbering, replace_with=ReplaceWith)
-    before_X, after_X = replace_with.split('X').map {|x| x.to_s }
+    (before_X, after_X) = replace_with.split('X').map(&:to_s)
+    before_X ||= ''
+    after_X ||= ''
     cits = {}
     regex_string = Regexp.escape(find_start_citation) + '(.*?)' + Regexp.escape(find_end_citation)
 
@@ -243,7 +245,7 @@ class Formatter
     # Multiple citations:
     cit_num_array.sort!
     #memo = [previous, running, size_cnt, string]
-    memo = nil
+    tracker = nil
     cit_num_array.inject([nil,false,1,'']) do |memo,num|
       ## not in a run:
       if (num - 1) != memo[0] # not in a run:
@@ -265,9 +267,10 @@ class Formatter
       end
       memo[2] += 1            # keep track of the size
       memo[0] = num           # set previous number
+      tracker = memo
       memo
     end
-    memo[3]
+    tracker[3]
   end
 
 end

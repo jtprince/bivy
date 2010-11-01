@@ -1,12 +1,12 @@
+require 'spec_helper'
 
-require 'test/unit'
 require 'bibliography'
 require 'citation'
-require 'format/html'
+#require 'format/html'
 
-class TestBasic < Test::Unit::TestCase
 
-  def setup
+describe 'basic bibliography test' do
+  before do
     authors = %w(HQ BY JT).zip(%w(Dork Man Prince)).map do |init, last|
       Citation::Author.new(last, init)
     end
@@ -24,8 +24,7 @@ class TestBasic < Test::Unit::TestCase
     @cits = [@cit1, @cit2]
   end
 
-  def test_to_and_from_yaml
-
+  it 'makes a YAML round trip' do
     yaml = <<END
 --- 
 month: Aug
@@ -45,8 +44,7 @@ bibtype: article
 vol: 32
 END
 
-    yobj = YAML.load(@cit1.to_yaml)
-    assert_equal(YAML.load(yaml), yobj, "cit yaml is frozen")
+    YAML.load(@cit1.to_yaml).is YAML.load(yaml) # just frozen really
 
     bibyaml = <<END2
 Prince1996:
@@ -69,22 +67,22 @@ END2
     bib = Bibliography.new
     bib.citations = [@cit1]
     created_yaml = bib.to_yaml
-    assert_equal(YAML.load(bibyaml), YAML.load(created_yaml), "bib yaml is frozen")
+
+    # frozen
+    YAML.load(created_yaml).is YAML.load(bibyaml)
 
     bib_from_yaml = Bibliography.from_yaml(bibyaml)
-    #assert_equal(bib, bib_from_yaml, "bibs are the same from objects and from yaml")
+    #assert_equal(bibbib_from_yaml, "bibs are the same from objects and from yaml")
     #assert_equal(bib.citations.first, bib_from_yaml.citations.first, "cits are the same from objects and from yaml")
     bc1 = bib.citations.first
     bc2 = bib_from_yaml.citations.first
-      %w(bibtype ident journal_full journal_medline journal_iso month pages title vol year).map {|v| v.to_sym}.each do |x|
-        assert_equal(bc1.send(x), bc2.send(x))
-      end
-      assert_equal(bc1.send(:authors), bc2.send(:authors))
+    %w(bibtype ident journal_full journal_medline journal_iso month pages title vol year).map {|v| v.to_sym}.each do |x|
+      bc2.send(x).is bc1.send(x)
+    end
+    bc2.send(:authors).is bc1.send(:authors)
   end
 
-  def test_write_bib
-    bib = Bibliography.new(@cits)
-    answ = bib.write(Format::HTML.new)
+  xit 'writes a bibliography' do  # better description??
     frozen = <<END
 <html>
 <body>
@@ -95,10 +93,11 @@ END2
 </body>
 </html>
 END
-    assert_equal(frozen, answ)
+    bib = Bibliography.new(@cits)
+    bib.write(Format::HTML.new).is frozen
   end
 
-  def test_add
+  it 'adds citations to the bibliography' do
     authors = %w(JT).zip(%w(Prince)).map do |init, last|
       Citation::Author.new(last, init)
     end
@@ -107,22 +106,22 @@ END
     }
     diff_cit = Citation::Article.new(hash)
 
-
-
     # single
     bib = Bibliography.new([@cit1, @cit2])
     cits_before = bib.citations.dup
     ans = bib.add(@cit1)
-    assert_equal(1, ans.size)
-    assert_equal(@cit1, ans.first, 'rejects identical id')
-    assert_equal(cits_before, bib.citations, "cits unchanged")
+    ans.size.is 1
+    # rejects identical id
+    ans.first.is @cit1
+    # cits unchanged
+    bib.citations.is cits_before
 
     ans = bib.add(@cit1, diff_cit)
-    assert_equal(1, ans.size)
-    assert_equal(@cit1, ans.first, 'rejects identical id')
-    assert_equal(cits_before.push(diff_cit), bib.citations, "added guy")
-
-
+    ans.size.is 1
+    # rejects identical id
+    ans.first.is @cit1
+    # added a guy
+    bib.citations.is cits_before.push(diff_cit)  
   end
 
 end

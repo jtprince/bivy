@@ -1,4 +1,3 @@
-require 'hash_by'
 require 'citation'
 require 'pubmed'
 
@@ -26,8 +25,8 @@ class Bibliography
   end
 
   def not_uniq_by(cits1, cits2, att)
-    self_by_att = cits1.hash_by(att)
-    other_by_att = cits2.hash_by(att)
+    self_by_att = cits1.group_by(&att)
+    other_by_att = cits2.group_by(&att)
     not_un = [] 
     other_by_att.each do |k,v| 
       if self_by_att.key? k
@@ -106,7 +105,8 @@ class Bibliography
   # selects as internal citations only those matching the array of idents
   # returns the citations
   def select_by_id!(ids)
-    hash = @citations.hash_uniq_by(:ident)
+    # should mimic index_by
+    hash = @citations.group_by(&:ident) ; hash.each {|k,v| hash[k] = v.last }
     new_cits = ids.map do |id|
       unless hash.key? id ; abort "Cannot find '#{id}' in citations!" end
       hash[id]
