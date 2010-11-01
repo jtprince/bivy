@@ -1,3 +1,8 @@
+==0.0.5 / 2010-11-01
+
+* all tests to specs
+* works with 1.9.2
+
 == 0.0.4 / 2010-03-15
 
 * switched repo to jeweler
