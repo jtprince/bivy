@@ -81,6 +81,9 @@ class Format::ACS
 
   # TODO: book
 
+  def book
+    [author_list('.'), i(title), press_location(), ': ', press(), year(), pages]
+  end
 
 end
 

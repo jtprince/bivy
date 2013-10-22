@@ -3,11 +3,11 @@ require 'journal'
 
 class Citation
   # quotes are director or parenthetical
-  attr_accessor :bibtype, :ident, :quotes, :abstract
+  attr_accessor :bibtype, :ident, :quotes, :abstract, :uri
   # authors should be an array of Author objects, or a string for an exact
   # line
   attr_reader :authors
-  
+
   def initialize(hash=nil)
     @authors = nil
     @quotes = []
@@ -150,7 +150,7 @@ class Citation::Workshop < Citation
 end
 
 class Citation::Book < Citation
-  attr_accessor :title, :publisher, :year
+  attr_accessor :title, :publisher, :location, :year
 end
 
 class Citation::Webpage < Citation
